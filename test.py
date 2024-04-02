@@ -89,14 +89,14 @@ early_stopping_callback = EarlyStopping(monitor="val_loss",
 
 # Train the model with TensorBoard callback
 history = model.fit(train_generator,
-                    steps_per_epoch=train_generator.samples // BATCH_SIZE,
+                    steps_per_epoch=(train_generator.samples // BATCH_SIZE)-1,
                     epochs=20,
                     validation_data=validation_generator,
-                    validation_steps=validation_generator.samples // BATCH_SIZE,
+                    validation_steps=(validation_generator.samples // BATCH_SIZE)-1,
                     callbacks=[tensorboard_callback, checkpoint_callback, early_stopping_callback])
 
 # Evaluate the model
-test_loss, test_acc = model.evaluate(test_generator, steps=test_generator.samples // BATCH_SIZE)
+test_loss, test_acc = model.evaluate(test_generator, steps=(test_generator.samples // BATCH_SIZE)-1)
 print(f'Test accuracy: {test_acc}, Test loss: {test_loss}')
 
 # Save the model in TensorFlow SavedModel format
