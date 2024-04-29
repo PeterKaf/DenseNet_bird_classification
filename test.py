@@ -83,6 +83,7 @@ if os.path.exists(model_filepath):
     print(f"Loading model from: {model_filepath}")
     model = tf.keras.models.load_model(model_filepath)
     initial_epoch = model.history.epoch[-1] + 1 if hasattr(model, 'history') and model.history.epoch else 0
+    print(f'initail_epoch will start at {initial_epoch}')
 else:
     # Load the DenseNet model
     base_model = DenseNet121(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
