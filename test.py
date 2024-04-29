@@ -2,10 +2,10 @@ import os
 import tensorflow as tf
 from tensorflow.keras.applications import DenseNet121
 from tensorflow.keras.applications.densenet import preprocess_input
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 import datetime
 
 # Define paths
@@ -72,8 +72,9 @@ base_model.trainable = False
 
 # Add custom layers
 x = base_model.output
-x = GlobalAveragePooling2D()(x)
+x = GlobalAveragePooling2D()(x) # we have to add it since it is not present in pretrained model
 x = Dense(1024, activation='relu')(x)
+x = Dropout(0.5)(x)  # Added dropout layer here
 predictions = Dense(num_classes, activation='softmax')(x)  # Use num_classes here
 
 # Final model
@@ -95,15 +96,21 @@ early_stopping_callback = EarlyStopping(monitor="val_loss",
                                         patience=5,
                                         restore_best_weights=True)
 
+reduce_lr = ReduceLROnPlateau(monitor="val_loss",
+                              factor=0.2,
+                              patience=3,
+                              min_lr=1e-6
+                              )
+
 # Train the model with TensorBoard callback
 history = model.fit(train_dataset,
                     epochs=20,
                     validation_data=validation_dataset,
-                    callbacks=[tensorboard_callback, checkpoint_callback, early_stopping_callback])
+                    callbacks=[tensorboard_callback, checkpoint_callback, early_stopping_callback, reduce_lr])
 
 # Evaluate the model
 test_loss, test_acc = model.evaluate(test_dataset)
 print(f'Test accuracy: {test_acc}, Test loss: {test_loss}')
 
 # Save the model in TensorFlow SavedModel format
-model.save('trained_models/model_4.keras')
+model.save('trained_models/data_fixed.keras')
