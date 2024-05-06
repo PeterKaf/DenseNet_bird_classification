@@ -14,8 +14,8 @@ validation_dir = 'dataset/valid'
 test_dir = 'dataset/test'
 checkpoints_dir = "checkpoints"
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")  # Logs directory
-model_filepath = "checkpoints/model-016-0.617.keras"  # Filepath of the model to load
-
+model_filepath = "checkpoints/model-016-0.617.kerasgdfgdfgdfg"  # Filepath of the model to load
+model_weigths = "checkpoints/weights/model.weights.h5"
 # Define parameters
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 16
@@ -33,7 +33,7 @@ train_dataset = tf.keras.preprocessing.image_dataset_from_directory(
     train_dir,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
-    label_mode='categorical'
+    label_mode='int'
 )
 
 # Load and preprocess the datasets
@@ -41,7 +41,7 @@ validation_dataset = tf.keras.preprocessing.image_dataset_from_directory(
     validation_dir,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
-    label_mode='categorical'
+    label_mode='int'
 )
 
 # Load and preprocess the test dataset
@@ -49,7 +49,7 @@ test_dataset = tf.keras.preprocessing.image_dataset_from_directory(
     test_dir,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
-    label_mode='categorical',
+    label_mode='int',
     shuffle=False
 )
 
@@ -81,7 +81,10 @@ reduce_lr = ReduceLROnPlateau(monitor="val_loss",
 
 if os.path.exists(model_filepath):
     print(f"Loading model from: {model_filepath}")
-    model = tf.keras.models.load_model(model_filepath)
+    model = tf.keras.models.load_model(model_filepath, compile=False)
+    model.load_weights(model_weigths)
+    model.compile(optimizer=Adam(learning_rate=0.0002), loss='categorical_crossentropy',
+                  metrics=['sparse_categorical_accuracy'])
     start_epoch = 16  # it ended at 16, so it has to start at 17, but +1 is added by default
 else:
     # Load the DenseNet model
@@ -97,7 +100,8 @@ else:
 
     # Final model
     model = Model(inputs=base_model.input, outputs=predictions)
-    model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy',
+                  metrics=['sparse_categorical_accuracy'])
     start_epoch = 0
 
 # Train the model with TensorBoard callback
