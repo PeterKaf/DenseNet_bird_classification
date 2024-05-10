@@ -14,7 +14,7 @@ validation_dir = 'dataset/valid'
 test_dir = 'dataset/test'
 checkpoints_dir = "checkpoints"
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")  # Logs directory
-model_filepath = "checkpoints/model-016-0.617.kerasgdfgdfgdfg"  # Filepath of the model to load
+# model_filepath = "checkpoints/model-024-0.526.keras"  # Filepath of the model to load (Not used with weights approach)
 model_weigths = "checkpoints/weights/model.weights.h5"
 # Define parameters
 IMG_SIZE = (224, 224)
@@ -79,37 +79,35 @@ reduce_lr = ReduceLROnPlateau(monitor="val_loss",
                               min_lr=1e-6
                               )
 
-if os.path.exists(model_filepath):
-    print(f"Loading model from: {model_filepath}")
-    model = tf.keras.models.load_model(model_filepath, compile=False)
+
+# Load the DenseNet model
+base_model = DenseNet121(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+base_model.trainable = False
+
+# Add custom layers
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+x = Dense(1024, activation='relu')(x)
+x = Dropout(0.5)(x)
+predictions = Dense(num_classes, activation='softmax')(x)
+
+# Final model
+model = Model(inputs=base_model.input, outputs=predictions)
+
+if os.path.exists(model_weigths):
+    print(f"Weights loaded from : {model_weigths}")
     model.load_weights(model_weigths)
-    model.compile(optimizer=Adam(learning_rate=0.0002), loss='categorical_crossentropy',
-                  metrics=['sparse_categorical_accuracy'])
-    start_epoch = 16  # it ended at 16, so it has to start at 17, but +1 is added by default
-else:
-    # Load the DenseNet model
-    base_model = DenseNet121(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-    base_model.trainable = False
 
-    # Add custom layers
-    x = base_model.output
-    x = GlobalAveragePooling2D()(x)
-    x = Dense(1024, activation='relu')(x)
-    x = Dropout(0.5)(x)
-    predictions = Dense(num_classes, activation='softmax')(x)
-
-    # Final model
-    model = Model(inputs=base_model.input, outputs=predictions)
-    model.compile(optimizer=Adam(learning_rate=0.001), loss='categorical_crossentropy',
-                  metrics=['sparse_categorical_accuracy'])
-    start_epoch = 0
+model.compile(optimizer=Adam(learning_rate=0.00004), loss='sparse_categorical_crossentropy',
+              metrics=['sparse_categorical_accuracy'])
+start_epoch = 18
 
 # Train the model with TensorBoard callback
 history = model.fit(train_dataset,
                     epochs=40,
                     validation_data=validation_dataset,
                     callbacks=[tensorboard_callback, checkpoint_callback, early_stopping_callback, reduce_lr],
-                    initial_epoch=start_epoch,)
+                    initial_epoch=start_epoch)
 
 # Evaluate the model
 test_loss, test_acc = model.evaluate(test_dataset)
