@@ -6,20 +6,7 @@ from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
-import datetime
-
-# Define paths
-train_dir = 'dataset/train'
-validation_dir = 'dataset/valid'
-test_dir = 'dataset/test'
-checkpoints_dir = "checkpoints"
-log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")  # Logs directory
-# model_filepath = "checkpoints/model-024-0.526.keras"  # Filepath of the model to load (Not used with weights approach)
-model_weigths = "checkpoints/weights/model.weights.h5"
-# Define parameters
-IMG_SIZE = (224, 224)
-BATCH_SIZE = 16
-num_classes = len(os.listdir(train_dir))
+from config import *
 
 
 # Define preprocessing function
@@ -30,7 +17,7 @@ def preprocessing(image, label):
 
 # Load and preprocess the training dataset
 train_dataset = tf.keras.preprocessing.image_dataset_from_directory(
-    train_dir,
+    TRAIN_DIR,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
     label_mode='int'
@@ -38,7 +25,7 @@ train_dataset = tf.keras.preprocessing.image_dataset_from_directory(
 
 # Load and preprocess the datasets
 validation_dataset = tf.keras.preprocessing.image_dataset_from_directory(
-    validation_dir,
+    VALIDATION_DIR,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
     label_mode='int'
@@ -46,7 +33,7 @@ validation_dataset = tf.keras.preprocessing.image_dataset_from_directory(
 
 # Load and preprocess the test dataset
 test_dataset = tf.keras.preprocessing.image_dataset_from_directory(
-    test_dir,
+    TEST_DIR,
     image_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
     label_mode='int',
@@ -61,9 +48,9 @@ validation_dataset = validation_dataset.map(preprocessing, num_parallel_calls=tf
 test_dataset = test_dataset.map(preprocessing, num_parallel_calls=tf.data.AUTOTUNE)
 
 # Define callbacks
-tensorboard_callback = TensorBoard(log_dir=log_dir, histogram_freq=1)
+tensorboard_callback = TensorBoard(log_dir=LOG_DIR, histogram_freq=1)
 
-checkpoint_callback = ModelCheckpoint(filepath=f"{checkpoints_dir}/model-{{epoch:03d}}-{{val_loss:.3f}}.keras",
+checkpoint_callback = ModelCheckpoint(filepath=f"{CHECKPOINTS_DIR}/model-{{epoch:03d}}-{{val_loss:.3f}}.keras",
                                       monitor='val_loss',
                                       verbose=1,
                                       save_best_only=True,
@@ -89,14 +76,14 @@ x = base_model.output
 x = GlobalAveragePooling2D()(x)
 x = Dense(1024, activation='relu')(x)
 x = Dropout(0.5)(x)
-predictions = Dense(num_classes, activation='softmax')(x)
+predictions = Dense(NUM_CLASSES, activation='softmax')(x)
 
 # Final model
 model = Model(inputs=base_model.input, outputs=predictions)
 
-if os.path.exists(model_weigths):
-    print(f"Weights loaded from : {model_weigths}")
-    model.load_weights(model_weigths)
+if os.path.exists(MODEL_WEIGHTS):
+    print(f"Weights loaded from : {MODEL_WEIGHTS}")
+    model.load_weights(MODEL_WEIGHTS)
 
 model.compile(optimizer=Adam(learning_rate=0.000008), loss='sparse_categorical_crossentropy',
               metrics=['sparse_categorical_accuracy'])
