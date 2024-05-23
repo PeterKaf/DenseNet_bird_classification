@@ -1,10 +1,6 @@
 import os
 import tensorflow as tf
-from tensorflow.keras.applications import DenseNet121
 from tensorflow.keras.applications.densenet import preprocess_input
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
-from tensorflow.keras.models import Model
-from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from config import *
 
@@ -66,28 +62,8 @@ reduce_lr = ReduceLROnPlateau(monitor="val_loss",
                               min_lr=1e-6
                               )
 
-
-# Load the DenseNet model
-base_model = DenseNet121(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-base_model.trainable = False
-
-# Add custom layers
-x = base_model.output
-x = GlobalAveragePooling2D()(x)
-x = Dense(1024, activation='relu')(x)
-x = Dropout(0.5)(x)
-predictions = Dense(NUM_CLASSES, activation='softmax')(x)
-
-# Final model
-model = Model(inputs=base_model.input, outputs=predictions)
-
-if os.path.exists(MODEL_WEIGHTS):
-    print(f"Weights loaded from : {MODEL_WEIGHTS}")
-    model.load_weights(MODEL_WEIGHTS)
-
-model.compile(optimizer=Adam(learning_rate=0.000008), loss='sparse_categorical_crossentropy',
-              metrics=['sparse_categorical_accuracy'])
-start_epoch = 48
+# Compile model
+model, start_epoch = compile_model()
 
 # Train the model with TensorBoard callback
 history = model.fit(train_dataset,
