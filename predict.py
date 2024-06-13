@@ -1,28 +1,11 @@
+from tensorflow.keras.applications.densenet import preprocess_input
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from config import *
 import tensorflow as tf
 import numpy as np
-from tensorflow.keras.applications.densenet import preprocess_input
-from config import *
 import matplotlib.pyplot as plt
 import os
 import glob
-
-
-# Define a function to load and preprocess each image
-def load_and_preprocess_image(path):
-    # Load the image file
-    image = tf.io.read_file(path)
-
-    # Decode the image
-    image = tf.image.decode_jpeg(image)
-
-    # Resize the image to the desired size
-    image = tf.image.resize(image, IMG_SIZE)
-
-    # Preprocess the image (this step depends on your model; adjust accordingly)
-    image = preprocess_input(image)
-
-    # Return the preprocessed image
-    return image
 
 
 def preprocessing(image, label):
@@ -65,38 +48,50 @@ for label in selected_labels:
     else:
         print(f"No files found in directory: {label}")
 
-# Predict labels for the selected images
-# Create a TensorFlow dataset from the list of image paths
-sampled_images = tf.data.Dataset.from_tensor_slices(selected_image_paths)
-# Map the load_and_preprocess_image function over the dataset
-sampled_images = sampled_images.map(load_and_preprocess_image, num_parallel_calls=tf.data.AUTOTUNE)
-print('wait here')
-sampled_images = sampled_images.batch(BATCH_SIZE)
-predictions = model.predict(sampled_images)
 
-# Display images with predicted vs actual labels
-fig, axs = plt.subplots(4, 5, figsize=(15, 12))
-axs = axs.ravel()  # Flatten the array of axes for easier iteration
+# Assuming selected_image_paths and selected_actual_labels are defined elsewhere
+num_images = len(selected_image_paths)
 
+# Calculate the number of columns needed to fill 4 rows without exceeding the total number of images
+cols_per_row = min(num_images // 4, 4)  # At most 4 columns per row
+num_rows = -(-num_images // cols_per_row)  # Calculate the number of rows needed
+
+# Create a figure with a grid of subplots arranged in 4 rows
+fig, axs = plt.subplots(num_rows, cols_per_row, figsize=(15, 10))  # Adjust figsize as needed
+
+# Flatten the array of axes for easier iteration
+axs = axs.ravel()
+
+# Load and display each image in its subplot
 for i, ax in enumerate(axs):
-    if i >= len(selected_actual_labels):  # Break loop if we have fewer images than expected
-        break
+    # Check if the current index exceeds the total number of images
+    if i < num_images:
+        # Load the image
+        loaded_image = load_img(selected_image_paths[i], target_size=(224, 224))
 
-    # Predict label directly using np.argmax and mapping to actual labels
-    predicted_index = np.argmax(predictions[i])
-    pred_label = selected_actual_labels[i]  # Use the actual label associated with the selected image
+        # Convert the loaded image to a NumPy array
+        image_array = img_to_array(loaded_image)
 
-    # Determine title color based on match between predicted and actual labels
-    title_color = 'green' if pred_label == selected_actual_labels[i] else 'red'
+        # Expand dimensions to match the model's input shape
+        # Assuming your model expects input shape (batch_size, height, width, channels)
+        image_array = np.expand_dims(image_array, axis=0)
 
-    # Load and display image
-    img = tf.io.read_file(selected_image_paths[i])
-    img = tf.image.decode_jpeg(img)
-    img = tf.image.resize(img, [IMG_SIZE[0], IMG_SIZE[1]])
-    ax.imshow(img.numpy())
-    ax.set_title(pred_label, color=title_color)
-    ax.set_xlabel(selected_actual_labels[i], color='black')
-    ax.axis('off')
+        # Predict with the model
+        predictions = model.predict(image_array)
 
-plt.tight_layout()
+        # Optionally, process the predictions to get the class name or confidence score
+        pred_label = selected_actual_labels[i]
+        # Determine title color based on match between predicted and actual labels
+        title_color = 'green' if pred_label == selected_actual_labels[i] else 'red'
+
+        # Display the image
+        ax.imshow(loaded_image)
+        ax.set_title(pred_label, color=title_color)
+        ax.set_xlabel(selected_actual_labels[i], color='black')
+        ax.axis('off')  # Hide axes
+    else:
+        # Remove the extra subplot if there are fewer images than the calculated number of subplots
+        fig.delaxes(axs[i])
+
+# Show the plot
 plt.show()
