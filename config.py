@@ -18,7 +18,7 @@ MODEL_WEIGHTS = "checkpoints/weights/model.weights.h5"
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 16
 NUM_CLASSES = len(os.listdir(TRAIN_DIR))
-USE_WEIGHTS = False  # Set to true in case of retraining model from weights otherwise false
+USE_WEIGHTS = True  # Set to true in case of retraining model from weights otherwise false
 
 
 def compile_model(start_epoch=0):
