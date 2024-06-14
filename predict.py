@@ -62,7 +62,6 @@ fig, axs = plt.subplots(num_rows, cols_per_row, figsize=(15, 10))  # Adjust figs
 # Flatten the array of axes for easier iteration
 axs = axs.ravel()
 
-# Load and display each image in its subplot
 for i, ax in enumerate(axs):
     # Check if the current index exceeds the total number of images
     if i < num_images:
@@ -78,16 +77,26 @@ for i, ax in enumerate(axs):
 
         # Predict with the model
         predictions = model.predict(image_array)
+        # Find the top 20 predictions (or however many labels you have)
+        top_prediction_id = np.argmax(predictions[0])
+        top_prediction_label = top_prediction_label = all_labels[top_prediction_id]
+        # Determine title color based on match between top predictions and selected actual labels
 
-        # Optionally, process the predictions to get the class name or confidence score
-        pred_label = selected_actual_labels[i]
-        # Determine title color based on match between predicted and actual labels
-        title_color = 'green' if pred_label == selected_actual_labels[i] else 'red'
+        # Format paths into basenames
+        top_prediction_label_base_name = os.path.basename(top_prediction_label)
+        actual_label_base_name = os.path.basename(selected_actual_labels[i])
 
         # Display the image
         ax.imshow(loaded_image)
-        ax.set_title(pred_label, color=title_color)
-        ax.set_xlabel(selected_actual_labels[i], color='black')
+
+        if top_prediction_label_base_name == actual_label_base_name:
+            # Set the title of the subplot using.set_title() method
+            ax.set_title(f"Detected:{top_prediction_label_base_name}\nTrue:{actual_label_base_name}", fontsize=12,
+                         color="green")
+        else:
+            ax.set_title(f"Detected:{top_prediction_label_base_name}\nTrue:{actual_label_base_name}", fontsize=12,
+                         color="red")
+
         ax.axis('off')  # Hide axes
     else:
         # Remove the extra subplot if there are fewer images than the calculated number of subplots
