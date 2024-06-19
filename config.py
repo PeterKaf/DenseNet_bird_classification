@@ -1,6 +1,9 @@
 import os
+import cv2
+import numpy as np
 from datetime import datetime
 from tensorflow.keras.applications import DenseNet121
+from tensorflow.keras.applications.densenet import preprocess_input
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
@@ -48,3 +51,34 @@ def compile_model(start_epoch=0):
     model.compile(optimizer=Adam(learning_rate=0.001), loss='sparse_categorical_crossentropy',
                   metrics=['sparse_categorical_accuracy'])
     return model, start_epoch
+
+
+def get_class_names(test_dataset):
+    class_names = test_dataset.class_names
+    return class_names
+
+
+def load_and_preprocess_image(image_path):
+    img = cv2.imread(image_path)
+    img = cv2.resize(img, IMG_SIZE)  # Assuming IMG_SIZE is defined elsewhere
+    img = np.expand_dims(img, axis=0)  # Add batch dimension
+    img = preprocess_input(img)
+    return img
+
+
+# Function to make predictions
+def predict_image(image_path, test_dataset):
+    # Reconstruct model architecture
+    model, start_epoch = compile_model()
+
+    # Load and preprocess the image
+    image = load_and_preprocess_image(image_path)
+
+    # Make prediction
+    pred = model.predict(image)
+    predicted_class = int(np.argmax(pred, axis=1))
+    accuracy = np.max(pred)
+    class_names = get_class_names(test_dataset)
+
+    # Print the prediction result
+    print(f"Predicted Class: {predicted_class}, Class Name: {class_names[predicted_class]}, Accuracy: {accuracy}")

@@ -1,5 +1,4 @@
 # Import packages
-import os
 import tensorflow as tf
 from tensorflow.keras.applications.densenet import preprocess_input
 from config import *
