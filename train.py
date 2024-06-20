@@ -1,4 +1,3 @@
-import os
 import tensorflow as tf
 from tensorflow.keras.applications.densenet import preprocess_input
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau

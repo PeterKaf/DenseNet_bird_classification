@@ -2,7 +2,7 @@ from config import *
 import tensorflow as tf
 
 # Replace 'path_to_your_image.jpg' with the actual path to the image you want to predict
-image_path = '/home/peter/PycharmProjects/card_classification/dataset/test/ABBOTTS BABBLER/155.jpg'
+image_path = '//dataset/test/ABBOTTS BABBLER/155.jpg'
 
 test_dataset = tf.keras.preprocessing.image_dataset_from_directory(
     TEST_DIR,
