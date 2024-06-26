@@ -5,8 +5,8 @@
 ### Prerequisites
 
 Before you begin:
-  * if you want to run code on local setup ensure you have met the following requirements from: requirements.txt
-  * or if you are just browsing, please visit the jupyter notebook: DenseNet bird classification¶.ipynb
+  * if you are just browsing, please visit the jupyter notebook: `DenseNet bird classification¶.ipynb`
+  * if you want to play with the project ensure you have met the following `requirements.txt`, (you can still access notebook in preview mode without this step)
 
 ### Installing Dependencies
 
