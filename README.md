@@ -5,20 +5,26 @@
 ### Prerequisites
 
 Before you begin:
-  * if you are just browsing, please visit the jupyter notebook: `DenseNet bird classification¶.ipynb`
-  * if you want to play with the project ensure you have met the following `requirements.txt`, (you can still access notebook in preview mode without this step)
+  * if you are just browsing, please visit the jupyter notebook: `DenseNet bird classification.ipynb`
+  * if you want to play with the project ensure you have met the following `environment.yaml`, (you can still access notebook in preview mode without this step)
 
 ### Installing Dependencies
 
-To install the required packages, navigate to your project directory in your terminal or command prompt and run following line, but I recommend using seperate enviroment for this purpose.
+### Using conda
+
+To use same conda enviroment, run following line:
 
 ```
-pip install -r requirements.txt
+conda env create -f environment.yaml
 ```
 
 ### Data Source
 
-The dataset used in this project was sourced from [525 bird spiecies dataset](https://www.kaggle.com/datasets/gpiosenka/100-bird-species). Please refer to the original source for licensing and usage restrictions.
+The dataset used in this project was sourced from [525 bird spiecies dataset](https://www.kaggle.com/datasets/gpiosenka/100-bird-species). Download the original dataset into 
+`dataset` directory, so that structure looks like the one provided in `config.py`. 
+By default, it is: `dataset/train`,`dataset/test`,`dataset/valid`, but you can customize it from within config.
+
+Please refer to the original source for licensing and usage restrictions.
 
 ## Running the Project
 
@@ -30,7 +36,7 @@ To run the project in jupyter notebook, execute the following commands in your t
 jupyter notebook
 ```
 
-Navigate to the notebook named `DenseNet bird classification¶.ipynb` for an easy preview of the project.
+Navigate to the notebook named `DenseNet bird classification.ipynb` for an easy preview of the project.
 
 ### Localy
 
