@@ -1,14 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras.applications.densenet import preprocess_input
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 from config import *
-
-
-# Define preprocessing function
-def preprocessing(image, label):
-    image = preprocess_input(image)
-    return image, label
-
 
 # Load and preprocess the training dataset
 train_dataset = tf.keras.preprocessing.image_dataset_from_directory(
@@ -71,9 +63,9 @@ history = model.fit(train_dataset,
                     callbacks=[tensorboard_callback, checkpoint_callback, early_stopping_callback, reduce_lr],
                     initial_epoch=start_epoch)
 
-# Evaluate the model
+# Evaluate the model after training
 test_loss, test_acc = model.evaluate(test_dataset)
 print(f'Test accuracy: {test_acc}, Test loss: {test_loss}')
 
-# Save the model in TensorFlow SavedModel format
+# Save the model
 model.save('trained_models/data_fixed.keras')

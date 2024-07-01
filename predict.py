@@ -1,15 +1,8 @@
-from tensorflow.keras.applications.densenet import preprocess_input
 from config import *
 import tensorflow as tf
 import numpy as np
 import os
 import glob
-
-
-def preprocessing(image, label):
-    image = preprocess_input(image)
-    return image, label
-
 
 # Load and preprocess the test dataset
 test_dataset = tf.keras.preprocessing.image_dataset_from_directory(
