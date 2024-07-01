@@ -24,6 +24,11 @@ USE_WEIGHTS = True  # Set to true in case of retraining model from weights other
 
 
 def preprocessing(image, label):
+    """
+    Applies preprocessing to an image and returns the processed image along with its label.
+
+    :return:Processed image and original label.
+    """
     image = preprocess_input(image)
     return image, label
 
@@ -58,11 +63,21 @@ def compile_model(start_epoch=0):
 
 
 def get_class_names(test_dataset):
+    """
+    Extracts class names from a test dataset.
+
+    :return: Class names extracted from the test dataset.
+    """
     class_names = test_dataset.class_names
     return class_names
 
 
 def load_and_preprocess_image(image_path):
+    """
+    Loads an image from disk, resizes it, expands dimensions, and preprocesses it.
+
+    :return: Preprocessed image ready for model input.
+    """
     img = cv2.imread(image_path)
     img = cv2.resize(img, IMG_SIZE)  # Assuming IMG_SIZE is defined elsewhere
     img = np.expand_dims(img, axis=0)  # Add batch dimension
@@ -72,6 +87,12 @@ def load_and_preprocess_image(image_path):
 
 # Function to make predictions
 def predict_image(image_path, test_dataset):
+    """
+    Predicts the class of an image using a precompiled model.
+    Prints the predicted class name, class index, and prediction accuracy.
+
+    :return: None
+    """
     # Reconstruct model architecture
     model, start_epoch = compile_model()
 
