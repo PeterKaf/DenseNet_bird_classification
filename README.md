@@ -33,7 +33,7 @@ Please refer to the original source for licensing and usage restrictions.
 To run the project in jupyter notebook, execute the following commands in your terminal or command prompt:
 
 ```
-jupyter notebook
+jupyter lab
 ```
 
 Navigate to the notebook named `DenseNet bird classification.ipynb` for an easy preview of the project.
