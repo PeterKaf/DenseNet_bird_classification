@@ -15,12 +15,12 @@ Before you begin:
 To use same conda enviroment, run following line:
 
 ```
-conda env create -f environment.yaml
+conda env create -f environment.yaml -p ../DenseNet_bird_classification/env
 ```
 and after that:
 
 ```
-conda activate../DenseNet_bird_classification/env
+conda activate ../DenseNet_bird_classification/env
 ```
 
 ### Data Source
