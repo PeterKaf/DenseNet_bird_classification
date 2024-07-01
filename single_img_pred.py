@@ -1,7 +1,8 @@
 from config import *
 import tensorflow as tf
 
-# Replace 'path_to_your_image.jpg' with the actual path to the image you want to predict
+# Provide path to the image you want to be classified (I used test set image, but it can be any image as long as it's
+# not from train or valid set)
 image_path = '//dataset/test/ABBOTTS BABBLER/155.jpg'
 
 test_dataset = tf.keras.preprocessing.image_dataset_from_directory(
