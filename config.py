@@ -14,14 +14,18 @@ VALIDATION_DIR = 'dataset/valid'
 TEST_DIR = 'dataset/test'
 CHECKPOINTS_DIR = "checkpoints"
 LOG_DIR = "logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")  # Logs directory
-MODEL_FILEPATH = "checkpoints/model-024-0.526.keras"  # Filepath of the model to load (Not used with weights approach)
-MODEL_WEIGHTS = "checkpoints/weights/model.weights.h5"
+MODEL_WEIGHTS = "trained_models/model.weights.h5"
 
 # Define parameters
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 16
 NUM_CLASSES = len(os.listdir(TRAIN_DIR))
 USE_WEIGHTS = True  # Set to true in case of retraining model from weights otherwise false
+
+
+def preprocessing(image, label):
+    image = preprocess_input(image)
+    return image, label
 
 
 def compile_model(start_epoch=0):
