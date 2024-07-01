@@ -1,4 +1,4 @@
-# Project Title: Multilabel Image Classification of Bird Species
+# Multilabel Image Classification of Bird Species
 
 ## Getting Started
 
