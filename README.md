@@ -58,3 +58,8 @@ To run the project locally, follow these steps:
 
 By following these steps, you'll be able to replicate the project's setup and experiment with the dataset and model configurations as needed.
 
+
+## License
+
+This project has been released under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) open source license.
+
