@@ -1,2 +1,4 @@
 dataset/*
+checkpoints/*
 !dataset/.gitkeep
+!checkpoints/.gitkeep
