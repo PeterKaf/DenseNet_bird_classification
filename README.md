@@ -51,7 +51,7 @@ Navigate to the notebook named `DenseNet bird classification.ipynb` for an easy 
 
 To run the project locally, follow these steps:
 
-1. Download the original dataset and place it into the matching directory specified in the settings as Step One.
+1. Download the original dataset and place it into the matching directory specified in the `config.py` (dataset/train, dataset/test, dataset/valid by default).
 2. (Optional) Use `dataset_merger.py` and `dataset_redistribution.py` functions to tailor the dataset according to your needs.
 3. Access saved weights from my training session using the `evaluate.py`, `predict.py`, and `single_img_predict.py` functions.
 4. Try training your own model using the `train.py` function.
