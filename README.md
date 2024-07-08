@@ -5,8 +5,12 @@
 ### Prerequisites
 
 Before you begin:
-  * if you are just browsing, please visit the jupyter notebook: `DenseNet bird classification.ipynb`
-  * if you want to play with the project ensure you have met the following `environment.yaml`, (you can still access notebook in preview mode without this step)
+  * If you are just browsing, please visit the jupyter notebook: `DenseNet bird classification.ipynb`
+  * If you wish to interact with the project, ensure you have met the requirements outlined in `environment.yaml`. 
+Note that this environment was originally built on Linux, and some packages may face difficulties when attempting to 
+install on Windows due to platform-specific compatibility issues. You can still access the notebook in preview mode
+without completing this step, but full functionality may be limited.
+
 
 ### Installing Dependencies
 
