@@ -1,2 +1,2 @@
 dataset/*
-!large_dataset/.gitkeep
+!dataset/.gitkeep
